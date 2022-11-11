@@ -8,40 +8,68 @@ package com.eggNews.egg.servicio;
 import com.eggNews.egg.entidades.Noticia;
 import com.eggNews.egg.exepciones.MiException;
 import com.eggNews.egg.repositorio.NoticiaRepositorio;
-import javafx.scene.image.Image;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- *
- * @author Usuario
- */
 
-    @Service
+
+  @Service
 public class ServicioNoticia {
 
     @Autowired
     NoticiaRepositorio noticiarepositorio;
 
     @Transactional
-    public void crearNoticia(Long id, String titulo, String cuerpo, Image foto) throws MiException {
+    public void crearNoticia(Long id, String titulo, String cuerpo) throws MiException {
 
-        validar(id, titulo, cuerpo, foto);
-        
+        validar(id, titulo, cuerpo);
         Noticia noticia = new Noticia();
-        
+
         noticia.setId(id);
         noticia.setCuerpo(cuerpo);
         noticia.setTitulo(titulo);
-        noticia.setFoto(foto);
+//        noticia.setFoto(foto);
 
         noticiarepositorio.save(noticia);
     }
-    
-    
 
-    public void validar(Long id, String titulo, String cuerpo, Image foto) throws MiException {
+    public List<Noticia> listarNoticia() {
+        List<Noticia> noticia = new ArrayList();
+        noticia = noticiarepositorio.findAll();
+        return noticia;
+    }
+    
+    @Transactional
+    public void modificarNoticia(Long id, String titulo, String cuerpo) throws MiException {
+        
+        validar(id, titulo, cuerpo);
+        Optional<Noticia> respuesta = noticiarepositorio.findById(id);
+
+        if (respuesta.isPresent()) {
+            Noticia noticia = respuesta.get();
+            noticia.setId(id);
+            noticia.setCuerpo(cuerpo);
+            noticia.setTitulo(titulo);
+//            noticia.setFoto(foto);
+            noticiarepositorio.save(noticia);
+        }
+    }
+    @Transactional
+    public void darDeBajaNoticia(Long id){
+        Noticia noticia = noticiarepositorio.getById(id);
+        noticiarepositorio.delete(noticia);
+    }
+    
+    public Noticia getOne(Long id){
+        return noticiarepositorio.getOne(id);
+    }
+
+    public void validar(Long id, String titulo, String cuerpo) throws MiException {
         if (id == null) {
             throw new MiException("El id no debe ser nulo");
         }
@@ -51,10 +79,16 @@ public class ServicioNoticia {
         if (cuerpo == null || cuerpo.isEmpty()) {
             throw new MiException("El cuerpo no debe ser nulo o estar vacio");
         }
-        if (foto.isError() || foto == null) {
-            throw new MiException("Su imagen esta nula o no es compatible o posee un error");
-        }
+//        if (foto.isError() || foto == null) {
+//            throw new MiException("Su imagen esta nula o no es compatible o posee un error");
+//        }
     }
+    
 }
+
+
+    
+
+    
 
 

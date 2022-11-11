@@ -5,9 +5,8 @@
  */
 package com.eggNews.egg.repositorio;
 
-import com.eggNews.egg.entidades.Noticia;
+import com.eggNews.egg.entidades.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,14 +16,8 @@ import org.springframework.stereotype.Repository;
  * @author Usuario
  */
 @Repository
-    public interface NoticiaRepositorio extends JpaRepository<Noticia, Long>{
+public interface UsuarioRepositorio extends JpaRepository<Usuario, String>{
     
-    @Query
-        ("SELECT n FROM Noticia n WHERE n.titulo= :titulo")
-    public Noticia consultar(@Param("titulo") String titulo);  
-    }
-
-
-    
-
-
+    @Query("SELECT u FROM Usuario u WHERE u.nombreUsuario = : nombreUsuario")
+    public Usuario buscarPorNombre(@Param("titulo")String titulo);
+}
