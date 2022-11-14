@@ -32,28 +32,28 @@ public class PortalControlador {
         return "Indexlogin.html";
     }
     
-    @GetMapping("/login")
-    public String login(){
+@GetMapping("/login")
+    public String login(@RequestParam(required = false) String error, ModelMap modelo){
+        if (error != null) {
+            modelo.put("error", "Usuario o contraseña invalidos!");
+        }
         return "login.html";
     }
+    
     
     @GetMapping("/registrar")
     public String registrar(){
         return "registro.html";
 }
-    @PostMapping("/registro")
-    public String registro(@RequestParam String nombreUsuario,@RequestParam  String password,@RequestParam  String password2, ModelMap modelo,String alta) throws MiException{
+ @PostMapping("/registro")
+    public String registro(@RequestParam String nombreUsuario,@RequestParam  String password,@RequestParam  String password2, ModelMap modelo,Date alta) throws MiException{
         try {
-            SimpleDateFormat fecha = new SimpleDateFormat("yyyy-mm-dd");
-            Date fechaFinal = fecha.parse(alta);
-            usuarioServicio.registrar(nombreUsuario, password, password2, fechaFinal, Rol.USUARIO, true);
+            usuarioServicio.registrar(nombreUsuario, password, password2, alta, Rol.USUARIO, true);
             modelo.put("Exito!", "Usuario registrado correcatamente");
             return "Indexlogin.html";
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             modelo.put("Error!", e.getMessage());
             return "registro.html";
         }
-       
     }
 }
